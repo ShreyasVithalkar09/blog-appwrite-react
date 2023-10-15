@@ -1,8 +1,8 @@
 import React from "react";
 
-function Loader() {
+function Loader({ className = "" }) {
   return (
-    <div role="status">
+    <div role="status" className={`${className}`}>
       <svg
         aria-hidden="true"
         className="w-8 h-8 mr-2 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"

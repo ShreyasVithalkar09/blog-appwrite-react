@@ -59,15 +59,6 @@ export class AuthService {
       throw new Error(error);
     }
   }
-
-  async getAuthor(userId) {
-    console.log("USERID---", userId);
-    try {
-      // return await ;
-    } catch (error) {
-      throw new Error(error);
-    }
-  }
 }
 
 const authService = new AuthService();

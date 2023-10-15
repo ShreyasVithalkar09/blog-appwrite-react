@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import authService from "../../appwrite/auth";
 import { login } from "../../store/features/authSlice";
 import { Button, Input, Logo } from "../index";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 
 function SignUp() {
@@ -13,9 +13,13 @@ function SignUp() {
   const { register, handleSubmit } = useForm();
 
   const [error, setError] = useState("");
+  const [loader, setLoader] = useState(false);
+
+  const authStatus = useSelector((state) => state.auth.status);
 
   const signup = async (data) => {
     setError("");
+    setLoader(true);
     try {
       const user = await authService.createAccount(data);
       if (user) {
@@ -25,6 +29,8 @@ function SignUp() {
       }
     } catch (error) {
       setError(error.message);
+    } finally {
+      setLoader(false);
     }
   };
 
@@ -89,7 +95,7 @@ function SignUp() {
 
               <div className="space-y-3">
                 <Button className="w-full hover:bg-blue-700" type="submit">
-                  Sign Up
+                  {loader && authStatus === false ? "Signing up..." : "Sign Up"}
                 </Button>
               </div>
             </div>

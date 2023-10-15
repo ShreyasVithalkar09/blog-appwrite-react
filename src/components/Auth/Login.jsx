@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { login as authLogin } from "../../store/features/authSlice";
 import { Button, Input, Logo } from "../index";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import authService from "../../appwrite/auth";
 import { useForm } from "react-hook-form";
 import toast, { Toaster } from "react-hot-toast";
@@ -14,9 +14,13 @@ function Login() {
   const { register, handleSubmit } = useForm();
 
   const [error, setError] = useState("");
+  const [loader, setLoader] = useState(false);
+
+  const authStatus = useSelector((state) => state.auth.status);
 
   const login = async (data) => {
     setError("");
+    setLoader(true);
     try {
       const session = await authService.login(data);
       if (session) {
@@ -26,9 +30,14 @@ function Login() {
       }
     } catch (error) {
       setError(error.message);
-      toast.error(error.message);
+    } finally {
+      setLoader(false);
     }
   };
+
+  useEffect(() => {
+    if (error) toast.error(error);
+  }, [error]);
 
   return (
     <section>
@@ -81,7 +90,7 @@ function Login() {
 
               <div className="space-y-3">
                 <Button className="w-full hover:bg-blue-700" type="submit">
-                  Sign In
+                  {loader && authStatus === false ? "Signing in..." : "Sign In"}
                 </Button>
               </div>
             </div>

@@ -4,14 +4,21 @@ import { Container, PostCard } from "../components";
 
 function AllPosts() {
   const [posts, setPosts] = useState([]);
+  const [loader, setLoader] = useState(false);
 
   useEffect(() => {
-    appwriteService.getPosts([]).then((posts) => {
-      if (posts) setPosts(posts.documents);
-    });
+    setLoader(true);
+    appwriteService
+      .getPosts([])
+      .then((posts) => {
+        if (posts) setPosts(posts.documents);
+      })
+      .finally(() => setLoader(false));
   }, []);
 
-  return (
+  return loader ? (
+    <p className="text-base font-medium text-center my-4">Loading...</p>
+  ) : (
     <div className="py-6 w-full">
       <Container>
         {posts.length === 0 && (

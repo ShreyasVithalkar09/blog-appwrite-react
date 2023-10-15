@@ -28,12 +28,14 @@ function Post() {
   }, [slug, navigate]);
 
   const deletePost = async () => {
-    appwriteService.deletePost(post.$id).then((status) => {
-      if (status) {
-        appwriteService.deleteFile(post.featuredImage);
-        navigate("/");
-      }
-    });
+    if (window.confirm("Are you sure to delete this post?")) {
+      appwriteService.deletePost(post.$id).then((status) => {
+        if (status) {
+          appwriteService.deleteFile(post.featuredImage);
+          navigate("/");
+        }
+      });
+    }
   };
 
   return post ? (
