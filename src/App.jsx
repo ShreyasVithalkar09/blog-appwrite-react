@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { Header, Footer } from "./components/index";
 import { useDispatch } from "react-redux";
-import authService from "./appwrite/auth.services";
-import { login, logout } from "./store/index";
-// TODO import { Outlet } from "react-router-dom";
+import authService from "./appwrite/auth";
+import { login, logout } from "./store/features/authSlice";
+import { Outlet } from "react-router-dom";
 
 function App() {
   const [loading, setLoading] = useState(false);
@@ -21,17 +21,15 @@ function App() {
         }
       })
       .finally(() => setLoading(false));
-  }, [dispatch]);
+  }, []);
 
-  loading ? (
-    <div>Loading...</div>
-  ) : (
+  return !loading ? (
     <>
       <Header />
-      {/* TODO { <Outlet />} */}
-      <Footer />
+      {loading && <p>Loading...</p>}
+      <Outlet />
     </>
-  );
+  ) : null;
 }
 
 export default App;

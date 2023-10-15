@@ -1,7 +1,7 @@
 import { useCallback, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Button, Input, RTE, Select } from "../index";
-import appwriteServie from "../../appwrite/blog.services";
+import appwriteService from "../../appwrite/blog";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
@@ -14,7 +14,7 @@ function PostForm({ post }) {
     useForm({
       defaultValues: {
         title: post?.title || "",
-        slug: post?.slug || "",
+        slug: post?.$id || "",
         content: post?.content || "",
         status: post?.status || "active",
       },
@@ -24,15 +24,15 @@ function PostForm({ post }) {
     if (post) {
       // update
       const file = data.image[0]
-        ? await appwriteServie.uploadFile(data.image[0])
+        ? await appwriteService.uploadFile(data.image[0])
         : null;
 
       if (file) {
         // delete old file
-        await appwriteServie.deleteFile(post.featuredImage);
+        await appwriteService.deleteFile(post.featuredImage);
       }
 
-      const dbPost = await appwriteServie.updatePost(post.$id, {
+      const dbPost = await appwriteService.updatePost(post.$id, {
         ...data,
         featuredImage: file ? file.$id : undefined,
       });
@@ -43,16 +43,17 @@ function PostForm({ post }) {
     } else {
       // create
       const file = data.image[0]
-        ? await appwriteServie.uploadFile(data.image[0])
+        ? await appwriteService.uploadFile(data.image[0])
         : null;
 
       if (file) {
         const fileId = file.$id;
         data.featuredImage = fileId;
 
-        const dbPost = await appwriteServie.createPost({
+        const dbPost = await appwriteService.createPost({
           ...data,
           userId: userData.$id,
+          author: userData.name,
         });
 
         if (dbPost) navigate(`/post/${dbPost.$id}`);
@@ -65,7 +66,7 @@ function PostForm({ post }) {
       return value
         .trim()
         .toLowerCase()
-        .replace(/^[A-Za-z\d\s]+/g, "-")
+        .replace(/[^A-Za-z\d\s]+/g, "-")
         .replace(/\s/g, "-");
 
     return "";
@@ -130,7 +131,7 @@ function PostForm({ post }) {
         {post && (
           <div className="w-full mb-4">
             <img
-              src={appwriteServie.getFilePreview(post.featuredImage)}
+              src={appwriteService.getFilePreview(post.featuredImage)}
               alt={post.title}
               className="rounded-md"
             />
@@ -149,7 +150,9 @@ function PostForm({ post }) {
         <Button
           type="submit"
           bgColor={post ? "bg-green-600" : undefined}
-          className="w-full"
+          className={
+            post ? "w-full hover:bg-green-700" : "hover:bg-blue-700 w-full"
+          }
         >
           {post ? "Update" : "Submit"}
         </Button>

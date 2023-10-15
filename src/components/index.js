@@ -7,13 +7,27 @@ import Login from "./Auth/Login";
 import SignUp from "./Auth/SignUp";
 import PostCard from "./PostCard";
 import Button from "./Button";
-import Input from "./Input"
-import Select from "./Select"
+import Input from "./Input";
+import Select from "./Select";
 import RTE from "./RTE";
+import AuthLayout from "./Auth/AuthLayout";
+import PostForm from "./Post-form/PostForm";
+import Loader from "./Loader";
 
-
-
-
-
-
-export { Header, Footer, Container, LogoutBtn, Logo, Login, PostCard, Button, Input, Select, SignUp, RTE };
+export {
+  Header,
+  Footer,
+  Container,
+  LogoutBtn,
+  Logo,
+  Login,
+  PostCard,
+  Button,
+  Input,
+  Select,
+  SignUp,
+  RTE,
+  AuthLayout,
+  PostForm,
+  Loader,
+};

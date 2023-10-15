@@ -36,8 +36,8 @@ function Header() {
 
   return (
     <header>
-      <Container>
-        <nav className="relative w-full bg-white">
+      <nav className="relative w-full bg-[#FFCC70] border py-2">
+        <Container>
           <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-2 sm:px-6 lg:px-8">
             <div className="inline-flex items-center space-x-2">
               <Link to="/">
@@ -50,7 +50,7 @@ function Header() {
                   item.active ? (
                     <li key={item.name}>
                       <button
-                        className="text-sm font-semibold text-gray-800 hover:text-gray-900"
+                        className="text-base font-semibold text-gray-800 hover:text-white hover:ease-in hover:transition-all hover:duration-300"
                         onClick={() => navigate(item.slug)}
                       >
                         {item.name}
@@ -66,8 +66,8 @@ function Header() {
               </ul>
             </div>
           </div>
-        </nav>
-      </Container>
+        </Container>
+      </nav>
     </header>
   );
 }
