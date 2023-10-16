@@ -1,7 +1,9 @@
+import BlogLogo from "../assets/bloglogo.svg";
+
 function Logo() {
   return (
     <div className="font-bold">
-      <img src="images/blog.png" alt="logo" width="30" />
+      <img src={BlogLogo} alt="logo" width="30" />
     </div>
   );
 }

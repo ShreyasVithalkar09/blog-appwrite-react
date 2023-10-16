@@ -1,42 +1,52 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import appwriteService from "../appwrite/blog";
 import { Container, Button } from "../components";
 import { useNavigate, Link, useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import parse from "html-react-parser";
 import convertTime from "../utils/convertTime";
+import { clearCache, getSinglePost } from "../store/features/postSlice";
+import toast from "react-hot-toast";
 
 function Post() {
-  const [post, setPost] = useState(null);
-
   const { slug } = useParams();
 
   const navigate = useNavigate();
 
+  const dispatch = useDispatch();
+
   const userData = useSelector((state) => state.auth.userData);
+
+  const { singlePost: post, isLoading } = useSelector((state) => state.post);
 
   const isAuthor = post && userData ? post.userId === userData.$id : false;
 
   useEffect(() => {
     if (slug) {
-      appwriteService.getPost(slug).then((post) => {
-        if (post) setPost(post);
-      });
-    } else {
-      navigate("/");
+      dispatch(getSinglePost(slug));
     }
-  }, [slug, navigate]);
+  }, [dispatch, slug]);
 
   const deletePost = async () => {
-    if (window.confirm("Are you sure to delete this post?")) {
-      appwriteService.deletePost(post.$id).then((status) => {
+    try {
+      if (window.confirm("Are you sure to delete this post?")) {
+        const status = await appwriteService.deletePost(post.$id);
         if (status) {
-          appwriteService.deleteFile(post.featuredImage);
-          navigate("/");
+          const filStatus = await appwriteService.deleteFile(
+            post.featuredImage
+          );
+          if (filStatus) {
+            dispatch(clearCache());
+            navigate("/");
+          }
         }
-      });
+      }
+    } catch (error) {
+      toast.error(error.message);
     }
   };
+
+  if (isLoading) return <p className="text-center text-md my-4">Loading...</p>;
 
   return post ? (
     <div className="py-6">

@@ -3,12 +3,19 @@ import { useForm } from "react-hook-form";
 import { Button, Input, RTE, Select } from "../index";
 import appwriteService from "../../appwrite/blog";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { useState } from "react";
+import { clearCache } from "../../store/features/postSlice";
 
 function PostForm({ post }) {
   const navigate = useNavigate();
 
   const userData = useSelector((state) => state.auth.userData);
+
+  const dispatch = useDispatch();
+
+  const [loader, setLoader] = useState(false);
+  const [error, setError] = useState("");
 
   const { register, handleSubmit, watch, setValue, control, getValues } =
     useForm({
@@ -21,6 +28,8 @@ function PostForm({ post }) {
     });
 
   const submit = async (data) => {
+    setError("");
+    setLoader(true);
     if (post) {
       // update
       const file = data.image[0]
@@ -38,6 +47,8 @@ function PostForm({ post }) {
       });
 
       if (dbPost) {
+        setLoader(false);
+        dispatch(clearCache());
         navigate(`/post/${dbPost.$id}`);
       }
     } else {
@@ -56,9 +67,14 @@ function PostForm({ post }) {
           author: userData.name,
         });
 
-        if (dbPost) navigate(`/post/${dbPost.$id}`);
+        if (dbPost) {
+          setLoader(false);
+          dispatch(clearCache());
+          navigate(`/post/${dbPost.$id}`);
+        }
       }
     }
+    setLoader(false);
   };
 
   const slugTransform = useCallback((value) => {
@@ -154,7 +170,9 @@ function PostForm({ post }) {
             post ? "w-full hover:bg-green-700" : "hover:bg-blue-700 w-full"
           }
         >
-          {post ? "Update" : "Submit"}
+          {post
+            ? `${loader ? "Updating..." : "Update"} `
+            : `${loader ? "Submitting" : "Submit"}`}
         </Button>
       </div>
     </form>
