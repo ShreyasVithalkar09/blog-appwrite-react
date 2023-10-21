@@ -13,6 +13,7 @@ import RTE from "./RTE";
 import AuthLayout from "./Auth/AuthLayout";
 import PostForm from "./Post-form/PostForm";
 import Loader from "./Loader";
+import Profile from "./Auth/Profile";
 
 export {
   Header,
@@ -30,4 +31,5 @@ export {
   AuthLayout,
   PostForm,
   Loader,
+  Profile,
 };

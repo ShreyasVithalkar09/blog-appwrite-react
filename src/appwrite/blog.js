@@ -105,6 +105,19 @@ export class Service {
     }
   }
 
+  // get all posts by user
+  async getPostsByUser(userId) {
+    try {
+      return await this.databases.listDocuments(
+        conf.appwriteDatabaseId,
+        conf.appwriteCollectionId,
+        [Query.equal("userId", userId)]
+      );
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
   // file upload
   async uploadFile(file) {
     try {
