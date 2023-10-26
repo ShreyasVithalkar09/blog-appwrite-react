@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import appwriteService from "../appwrite/blog";
-import { Container, Button } from "../components";
+import { Container, Button, Input } from "../components";
 import { useNavigate, Link, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import parse from "html-react-parser";
@@ -83,6 +83,28 @@ function Post() {
         </div>
 
         <div className="browser-css">{parse(post.content)}</div>
+
+        {/* comments  */}
+        {userData && (
+          <div className="comments-section my-8">
+            <form>
+              <Input
+                type="text"
+                label="Add Comments: "
+                placeholder="Add you comments..."
+                className="my-2"
+              />
+              <Button
+                type="submit"
+                bgColor="white"
+                textColor="text-gray-800"
+                className="hover:bg-blue-700 hover:text-white border-2 border-blue-700 my-2"
+              >
+                Submit
+              </Button>
+            </form>
+          </div>
+        )}
       </Container>
     </div>
   ) : null;
